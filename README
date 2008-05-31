@@ -1,0 +1,92 @@
+h1. Project Description - Atom REST API for Google App Engine
+
+h2. Summary
+
+The goal of this project is to develop an Open Source set of scripts that implements the Ning Atom API entry-points on any application hosted on Google Application Engine.
+
+Here is a thread with people asking for such API:
+http://groups.google.com/group/google-appengine/browse_thread/thread/b27ecc13ac426570/a4ea788be3c0a9a0
+
+h2. Background
+
+Before turning into a social network provider, Ning.com was a platform to build web applications, with almost all the same goals of the current Google App Engine, and for a couple of years a good lot of work was spent to build a robust platform and API (that is still the same base were the current social network product runs on ), with a scalable non-relational database with dynamic shapes, (aka Ning Content Store ). 
+
+One of the great things about Ning's Platform is that any app created on the Ning platform comes out-of-the-box, with a powerful REST API, to handle the main operations, like querying content, adding, removing, getting user info, authenticating, managing roles, uploading files, messaging and a lot of other nice features of the platform.
+
+When Google launched the App engine, another opportunity for interesting web applications to grow have arrived, but the platform is still not as mature as it's predecessor, and this is the gap where this project aims to help with. 
+
+h2. Benefits
+
+    * a plug'nplay package that enable easy web services API with full read access without having to code anything on any GAE app
+    * execute arbitrary queries against the Data Store and get the results as an Atom feed
+    * 3rd party developers can easily create mash-ups and applications using your app's data
+    * developers without prior Python knowledge can take advantage of DataStore bigtable implementation and GAE app hosting
+    * since the output is atom, people can subscribe to any data view of your application using existing feed readers
+    * anyone can make queries from the location bar instantly!
+    * two apps with the REST package installed can perform cross app queries (something currently not supported by the App Engine)
+
+
+h2. Specs
+Here are the full documentation from the Ning website:
+http://developer.ning.com/notes/Ning_REST_API
+
+
+h2. Examples
+
+Check some examples of the syntax and uses of the Ning REST API to get an idea of what people do.
+
+h2. Contributors Requirements
+
+The person or company willing to contribute to this project must ideally have the following profile:
+
+    * Experience with web development
+    * Familiarity with the Python programming language
+    * Passion for standards and open source code
+    * Availability for phone meetings on weekends
+    * Enjoy rapid development and fast release cycles
+    * Deliver clean and well documented code
+    * Comfortable with source version control systems (ideally git, but svn is ok)
+    * Ideally have played with Google App Engine before (not required)
+    * Ideally have PHP skills (not required)
+    * Ideally can attend to 1 or 2 meetings in São Carlos, SP, Brazil (amazing! but not required)
+    * Ideally have developed on the Ning platform before (fantastic! but also not required)
+    * Portuguese speaking is a plus
+
+
+h2. Project Description
+
+h3. Phase 1: Content Operations
+
+The first part of the project involves the implementation of a set of python scripts that can easily be copied into any existing GAE application and perform seamless out-of-the-box, or with minimum configuration, and using the same url syntax (/xn/atom/1.0/content etc) the following basic operations:
+
+   # Make Content queries and retrieve a feed with the results, or an error
+   # Make Content rollup queries and retrieve a feed with the xn:rollout results
+   # Create Content using POST
+   # Update Content using PUT
+   # Delete Content using DELETE
+   # Create Binary Content using POST
+
+
+The details of the syntax of the feeds, the calls and the expected results are in http://developer.ning.com/notes/XML_Operations
+
+This phase is meant to be finished in the period of 2 weeks or less, ideally with constant iteration between the engineer(you) and the product team(me), after that period we should have a first beta release frozen and ready for QA. And, after the tests, if necessary some fixes and updates may be assigned back to the engineering team (1 full cycle).
+
+h3. Phase 2: Profiles
+
+future
+
+h3. Phase 3: Tags
+
+future
+
+h3. Phase 4: Roles
+
+future
+
+h2. Other References
+
+http://developer.ning.com
+http://blog.ning.com/2006/04/the_hottest_api_on_the_interne.html
+http://restdemos.ning.com
+http://idomyownstunts.blogspot.com
+http://blog.fabricio.org
