@@ -4,14 +4,13 @@ h2. Summary
 
 The goal of this project is to develop an Open Source set of scripts that implements the Ning Atom API entry-points on any application hosted on Google Application Engine.
 
-Here is a thread with people asking for such API:
-http://groups.google.com/group/google-appengine/browse_thread/thread/b27ecc13ac426570/a4ea788be3c0a9a0
+"Here is a thread with people asking for such API":http://groups.google.com/group/google-appengine/browse_thread/thread/b27ecc13ac426570/a4ea788be3c0a9a0
 
 h2. Background
 
-Before turning into a social network provider, Ning.com was a platform to build web applications, with almost all the same goals of the current Google App Engine, and for a couple of years a good lot of work was spent to build a robust platform and API (that is still the same base were the current social network product runs on ), with a scalable non-relational database with dynamic shapes, (aka Ning Content Store ). 
+Before turning into a social network provider, "Ning.com":http://ning.com was a platform to build web applications, with almost all the same goals of the current "Google App Engine":http://code.google.com/appengine/ , and for a couple of years a good lot of work was spent to build a robust platform and API (that is still "the same base were the current social network product runs on":http://blog.diegodoval.com/2007/10/one_small_rest_call_for_man_on.html ), with a scalable non-relational database with dynamic shapes, (aka "Ning Content Store":http://developer.ning.com/notes/The_Ning_Content_Store:_A_Primer ). 
 
-One of the great things about Ning's Platform is that any app created on the Ning platform comes out-of-the-box, with a powerful REST API, to handle the main operations, like querying content, adding, removing, getting user info, authenticating, managing roles, uploading files, messaging and a lot of other nice features of the platform.
+One of the great things about Ning's Platform is that any app created on the Ning platform comes out-of-the-box, with a powerful REST API, to handle the main operations, like querying content, adding, removing, getting user info, authenticating, managing roles, uploading files, messaging and "a lot of other nice features of the platform":http://blog.diegodoval.com/2007/10/the_ning_platform_yes_it_is_th.html .
 
 When Google launched the App engine, another opportunity for interesting web applications to grow have arrived, but the platform is still not as mature as it's predecessor, and this is the gap where this project aims to help with. 
 
@@ -23,19 +22,19 @@ h2. Benefits
     * developers without prior Python knowledge can take advantage of DataStore bigtable implementation and GAE app hosting
     * since the output is atom, people can subscribe to any data view of your application using existing feed readers
     * anyone can make queries from the location bar instantly!
-    * two apps with the REST package installed can perform cross app queries (something currently not supported by the App Engine)
+    * two apps with the REST package installed can perform cross app queries (something "currently not supported":http://code.google.com/p/googleappengine/issues/detail?id=106 by the App Engine)
 
 
 h2. Specs
-Here are the full documentation from the Ning website:
-http://developer.ning.com/notes/Ning_REST_API
+
+"Here are the full documentation from the Ning website":http://developer.ning.com/notes/Ning_REST_API
 
 
 h2. Examples
 
-Check some examples of the syntax and uses of the Ning REST API to get an idea of what people do.
+Check some "examples of the syntax and uses of the Ning REST API":http://docs.google.com/Doc?id=af2kgqg8c2b4_17cvhx4w to get an idea of what people do.
 
-h2. Contributors Requirements
+h2. Contributors
 
 The person or company willing to contribute to this project must ideally have the following profile:
 
@@ -67,9 +66,7 @@ The first part of the project involves the implementation of a set of python scr
    # Create Binary Content using POST
 
 
-The details of the syntax of the feeds, the calls and the expected results are in http://developer.ning.com/notes/XML_Operations
-
-This phase is meant to be finished in the period of 2 weeks or less, ideally with constant iteration between the engineer(you) and the product team(me), after that period we should have a first beta release frozen and ready for QA. And, after the tests, if necessary some fixes and updates may be assigned back to the engineering team (1 full cycle).
+The details of the syntax of the feeds, the calls and the expected results are in "http://developer.ning.com/notes/XML_Operations":http://developer.ning.com/notes/XML_Operations
 
 h3. Phase 2: Profiles
 
@@ -85,8 +82,8 @@ future
 
 h2. Other References
 
-http://developer.ning.com
-http://blog.ning.com/2006/04/the_hottest_api_on_the_interne.html
-http://restdemos.ning.com
-http://idomyownstunts.blogspot.com
-http://blog.fabricio.org
+* "http://developer.ning.com":http://developer.ning.com
+* "http://blog.ning.com/2006/04/the_hottest_api_on_the_interne.html":http://blog.ning.com/2006/04/the_hottest_api_on_the_interne.html
+* "http://restdemos.ning.com":http://restdemos.ning.com
+* "http://idomyownstunts.blogspot.com":http://idomyownstunts.blogspot.com
+* "http://blog.fabricio.org":http://blog.fabricio.org
