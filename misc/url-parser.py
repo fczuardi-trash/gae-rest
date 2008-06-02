@@ -27,7 +27,7 @@ urls = (
 
 def param_parser(params):
     # TODO: handle operators other than = (>, < etc)
-    if params == None or params == '': return []
+    if params is None or params == '': return []
     # hash = dict(param.split('=') for param in params.split('&'))
     return params.split('&')
 
