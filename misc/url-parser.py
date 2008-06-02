@@ -1,3 +1,5 @@
+#!/usr/bin/env python
+# encoding: utf-8
 """Test script with parsing functions
 
 This script can run on a regular python console, it is just a set of 
