@@ -1,6 +1,11 @@
-"""Test script with functions to parse resources, selectors and 
-operators from urls according to the rules described in 
+"""Test script with parsing functions
+
+This script can run on a regular python console, it is just a set of 
+helper functions to extract resources, selectors and operators from urls
+according to the rules described in 
 http://developer.ning.com/notes/REST_API_Request_URL_Syntax
+
+The idea is to use this in the main project as it matures.
 """
 
 import urllib2
