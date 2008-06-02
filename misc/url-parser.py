@@ -47,7 +47,7 @@ def query_parser(query):
 for url in urls:
     path = '?'.join(urllib2.urlparse.urlsplit(url)[2:4]) # /xn/atom/1.0 ...
     query = re.findall('atom/1\.0/(.*)', path) # content(type='Photo') ...
-    if len(query) > 0:
+    if query:
         print repr(query_parser(query[0]))
     else :
         print '--'
