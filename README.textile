@@ -86,3 +86,5 @@ h2. Other References
 h2. Open Questions
 
 * how to flag/treat private vs public content on GAE ? (Ning has the ->isPrivate boolean attribute) 
+* how to query contents of all types without prior knowledge of what Entitie Models an app has? (Ning does not require a kind to be specified on queries)
+** would it be possible to simulate this behavior on GAE, by running an extra-step in the installation to craw the code and identify all db.Model and db.Expando Entity types?
