@@ -37,7 +37,7 @@ class XNQuery:
   ENTITY_AND_CONDITIONS = re.compile("""([^(]+)(?:\((.*)\))?""")
   def __init__(self, entities, order):
     self.entities = Storage()
-    self.order = []
+    self.order = Storage()
     self._parse_entities(entities)
     self._parse_conditions(self.order, order)
   def _parse_entities(self, entities):
@@ -50,14 +50,14 @@ class XNQuery:
         entity_obj = self.entities[entity_name]
         conds = m.group(2)
         if conds:
-          entity_obj.conditions = []
+          entity_obj.conditions = Storage()
           self._parse_conditions(entity_obj.conditions, conds)
-  def _parse_conditions(self, arr, conditions):
+  def _parse_conditions(self, obj, conditions):
     if conditions == None:
       return None
     for cond in conditions.split('&'):
       xncond = XNCondition.parse(cond)
-      if xncond: arr.append(xncond)
+      if xncond: obj[xncond.leftside] = xncond
 
 class XNQueryTester(unittest.TestCase):
   queries = (
@@ -70,11 +70,11 @@ class XNQueryTester(unittest.TestCase):
   def test_author_is_david(self):
     sample_query = self.queries[1]
     xnquery = XNQuery(sample_query[0], sample_query[1])
-    assert xnquery.entities['content'].conditions[1].rightside == 'david'
+    assert xnquery.entities['content'].conditions['author'].rightside == 'david'
   def test_order_parsing(self):
     sample_query = self.queries[3]
     xnquery = XNQuery(sample_query[0], sample_query[1])
-    assert xnquery.order[0].rightside == 'my.viewCount@D'
+    assert xnquery.order['order'].rightside == 'my.viewCount@D'
 
 if __name__ == '__main__':
   unittest.main()
