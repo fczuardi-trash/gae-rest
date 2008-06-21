@@ -6,6 +6,7 @@ import unittest
 class InvalidResource(Exception): pass
 class InvalidSelectorOperator(Exception): pass
 
+# Storage helper class comes from web.py, props to Aaron Swartz
 class Storage(dict):
   def __getattr__(self, key):
     try: return self[key]
