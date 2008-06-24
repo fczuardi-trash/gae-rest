@@ -1,0 +1,10 @@
+<feed xmlns="http://www.w3.org/2005/Atom" xmlns:xn="http://www.ning.com/atom/1.0">
+  <title>GAE-REST Test Atom Feed</title>
+{% for object in objects %}
+  <entry>
+      {% for property in object.properties %}
+      <xn:{{property.name}}>{{property.value}}</xn:{{property.name}}>
+      {% endfor %}
+  </entry>
+{% endfor %}
+</feed>

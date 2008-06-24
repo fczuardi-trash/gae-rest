@@ -1,20 +1,12 @@
 import os, re, sys, types
 sys.path += [os.path.abspath(os.path.dirname(__file__))]
 import glob, urllib2
+import urllib
 import wsgiref.handlers
 from google.appengine.ext import db
 from google.appengine.ext import webapp
+from google.appengine.ext.webapp import template
 from xnquery import *
-
-class XNExposedModel(db.Model):
-  name = db.StringProperty()
-  model_properties = db.StringListProperty()
-
-def expose_model(name, cls):
-  exposed_model = XNExposedModel()
-  exposed_model.model_properties = cls.properties().keys()
-  exposed_model.name = name
-  exposed_model.put()
 
 def expose(only=[]):
   loadedfiles = []
@@ -29,21 +21,17 @@ def expose(only=[]):
       sys.path += [pydir]
       loadedfiles.append(__import__(pyfile))
       sys.path.remove(pydir)
-  if len(only) > 0:
-    for model in only:
-      for lf in loadedfiles:
-        if model in dir(lf):
-          obj = getattr(lf, model)
-          if type(obj) == db.PropertiedClass:
-            expose_model(model, obj)
-  else:
-    for lf in loadedfiles:
-      for name in dir(lf):
-        obj = getattr(lf, name)
-        if type(obj) == db.PropertiedClass:
-          expose_model(name, obj)
 
 expose()
+
+def build_object_list(objects):
+  output = []
+  for object in objects:
+    o = Storage({'properties': []})
+    for prop in object.properties().keys():
+      o.properties.append(Storage({'name': prop, 'value': getattr(object, prop)}))
+    output.append(o)
+  return output
 
 def retrieve_model_property_list(entity):
   q = db.GqlQuery("SELECT * FROM XNExposedModel WHERE name = :1", entity)
@@ -55,9 +43,9 @@ class XNQueryHandler(webapp.RequestHandler):
     self.response.headers['Content-Type'] = 'text/plain'
     gqlquery = GQLQueryBuilder(xnquery)
     objects = db.GqlQuery(str(gqlquery))
-    for object in objects:
-      self.response.out.write('$object[type=%s]: %s\n' % (xnquery.resources.content.selectors.type.rightside, repr(content)))
-    self.response.out.write('[debug] Entity property list: %s.' % repr(retrieve_model_property_list(xnquery.resources.content.selectors.type.rightside)))
+    self.response.headers['Content-Type'] = 'application/atom+xml'
+    path = os.path.join(os.path.dirname(__file__), "templates/atom.xml")
+    self.response.out.write(template.render(path, {'objects': build_object_list(objects)}))
 
 def main():
   application = webapp.WSGIApplication([('/xn/(.*)/(.*)/(.*)', XNQueryHandler)], debug=True)
