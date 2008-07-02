@@ -31,11 +31,18 @@ class element:
   def __exit__(self, type, value, tb):
     self.builder.write('</%s>\n' % self.name)
     self.builder.indentation -= 2
-  def __call__(self, value=None, **kargs):
+  def __call__(self, value=False, **kargs):
     if len(kargs.keys()) > 0:
       self.attributes = kargs
       self.serialized_attrs = self.serialize_attrs(kargs)
-    if value != None:
+    if value == None:
+      self.builder.indentation += 2
+      if hasattr(self, 'attributes'):
+        self.builder.write('<%s %s />\n' % (self.name, self.serialized_attrs))
+      else:
+        self.builder.write('<%s />\n' % self.name)
+      self.builder.indentation -= 2
+    elif value != False:
       self.builder.indentation += 2
       if hasattr(self, 'attributes'):
         self.builder.write('<%s %s>%s</%s>\n' % (self.name, self.serialized_attrs, value, self.name))
@@ -52,24 +59,36 @@ class element:
 
 if __name__ == "__main__":
   xml = builder()
-  with xml.entries:
-    with xml.entry(id=1):
-      xml.title("Woohoo!")
-      xml.ref("//1")
-    with xml.entry(id=2):
-      xml.title("Woohoo!")
-      xml.ref("//2")
+  with xml.feed(xmlns='http://www.w3.org/2005/Atom'):
+    xml.title('Example Feed')
+    xml.link(None, href='http://example.org/')
+    xml.updated('2003-12-13T18:30:02Z')
+    with xml.author:
+      xml.name('John Doe')
+    xml.id('urn:uuid:60a76c80-d399-11d9-b93C-0003939e0af6')
+    with xml.entry:
+      xml.title('Atom-Powered Robots Run Amok')
+      xml.link(None, href='http://example.org/2003/12/13/atom03')
+      xml.id('urn:uuid:1225c695-cfb8-4ebb-aaaa-80da344efa6a')
+      xml.updated('2003-12-13T18:30:02Z')
+      xml.summary('Some text.')
   print xml
 
 '''
-<entries>
-  <entry id="1">
-    <title>Woohoo!</title>
-    <ref>//1</ref>
+<feed xmlns="http://www.w3.org/2005/Atom">
+  <title>Example Feed</title>
+  <link href="http://example.org/" />
+  <updated>2003-12-13T18:30:02Z</updated>
+  <author>
+    <name>John Doe</name>
+  </author>
+  <id>urn:uuid:60a76c80-d399-11d9-b93C-0003939e0af6</id>
+  <entry>
+    <title>Atom-Powered Robots Run Amok</title>
+    <link href="http://example.org/2003/12/13/atom03" />
+    <id>urn:uuid:1225c695-cfb8-4ebb-aaaa-80da344efa6a</id>
+    <updated>2003-12-13T18:30:02Z</updated>
+    <summary>Some text.</summary>
   </entry>
-  <entry id="2">
-    <title>Woohoo!</title>
-    <ref>//2</ref>
-  </entry>
-</entries>
+</feed>
 '''
