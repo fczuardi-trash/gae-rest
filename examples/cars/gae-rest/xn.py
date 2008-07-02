@@ -1,3 +1,4 @@
+from __future__ import with_statement
 import os, re, sys, types
 sys.path += [os.path.abspath(os.path.dirname(__file__))]
 import glob, urllib2
@@ -7,6 +8,7 @@ from google.appengine.ext import db
 from google.appengine.ext import webapp
 from google.appengine.ext.webapp import template
 from xnquery import *
+from xmlbuilder import *
 
 def expose(only=[]):
   loadedfiles = []
@@ -24,28 +26,29 @@ def expose(only=[]):
 
 expose()
 
-def build_object_list(objects):
-  output = []
-  for object in objects:
-    o = Storage({'properties': []})
-    for prop in object.properties().keys():
-      o.properties.append(Storage({'name': prop, 'value': getattr(object, prop)}))
-    output.append(o)
-  return output
-
 def retrieve_model_property_list(entity):
   q = db.GqlQuery("SELECT * FROM XNExposedModel WHERE name = :1", entity)
   return q[0].model_properties
 
 class XNQueryHandler(webapp.RequestHandler):
+  FEED_NS = {
+    'xmlns': 'http://www.w3.org/2005/Atom',
+    'xmlns:xn': 'http://www.ning.com/atom/1.0'
+  }
   def get(self, format, version, query):
     xnquery = XNQueryParser(query, os.environ['QUERY_STRING'])
-    self.response.headers['Content-Type'] = 'text/plain'
     gqlquery = GQLQueryBuilder(xnquery)
     objects = db.GqlQuery(str(gqlquery))
     self.response.headers['Content-Type'] = 'application/atom+xml'
-    path = os.path.join(os.path.dirname(__file__), "templates/atom.xml")
-    self.response.out.write(template.render(path, {'objects': build_object_list(objects)}))
+    #path = os.path.join(os.path.dirname(__file__), "templates/atom.xml")
+    xml = builder()
+    with xml.feed(**XNQueryHandler.FEED_NS):
+      xml.title("GAE-REST Test Atom Feed")
+      for object in objects:
+        with xml.entry:
+          for property in object.properties().keys():
+            xml["xn:%s" % property](getattr(object, property))
+    self.response.out.write(str(xml))
 
 def main():
   application = webapp.WSGIApplication([('/xn/(.*)/(.*)/(.*)', XNQueryHandler)], debug=True)
