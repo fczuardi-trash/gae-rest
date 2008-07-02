@@ -2,6 +2,7 @@ from __future__ import with_statement
 from StringIO import StringIO
 
 __author__ = ('Jonas Galvez', 'jonas@codeazur.com.br', 'http://jonasgalvez.com.br')
+__license__ = "GPL"
 
 import sys
 

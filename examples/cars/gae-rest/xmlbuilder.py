@@ -2,13 +2,14 @@ from __future__ import with_statement
 from StringIO import StringIO
 
 __author__ = ('Jonas Galvez', 'jonas@codeazur.com.br', 'http://jonasgalvez.com.br')
+__license__ = "GPL"
 
 import sys
 
 class builder:
   def __init__(self, version, encoding):
     self.document = StringIO()
-    self.document.write('<?xml version="%s" encoding="%s"?>' % (version, encoding))
+    self.document.write('<?xml version="%s" encoding="%s"?>\n' % (version, encoding))
     self.indentation = -2
   def __getattr__(self, name):
     return element(name, self)
@@ -16,7 +17,6 @@ class builder:
     return element(name, self)
   def __str__(self):
     return self.document.getvalue()
-  xml
   def write(self, line):
     self.document.write('%s%s' % ((self.indentation * ' '), line))
 
@@ -77,6 +77,7 @@ if __name__ == "__main__":
   print xml
 
 '''
+<?xml version="1.0" encoding="utf-8"?>
 <feed xmlns="http://www.w3.org/2005/Atom">
   <title>Example Feed</title>
   <link href="http://example.org/" />
