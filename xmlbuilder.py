@@ -62,8 +62,13 @@ print xml
 
 '''
 <entries>
-<entry id="1">
-<title>Woohoo!</title>
-</entry>
+  <entry id="1">
+    <title>Woohoo!</title>
+    <ref>//1</ref>
+  </entry>
+  <entry id="2">
+    <title>Woohoo!</title>
+    <ref>//2</ref>
+  </entry>
 </entries>
 '''
