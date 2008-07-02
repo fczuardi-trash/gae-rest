@@ -6,8 +6,9 @@ __author__ = ('Jonas Galvez', 'jonas@codeazur.com.br', 'http://jonasgalvez.com.b
 import sys
 
 class builder:
-  def __init__(self):
+  def __init__(self, version, encoding):
     self.document = StringIO()
+    self.document.write('<?xml version="%s" encoding="%s"?>\n' % (version, encoding))
     self.indentation = -2
   def __getattr__(self, name):
     return element(name, self)
@@ -58,7 +59,7 @@ class element:
     return ' '.join(serialized)
 
 if __name__ == "__main__":
-  xml = builder()
+  xml = builder(version="1.0", encoding="utf-8")
   with xml.feed(xmlns='http://www.w3.org/2005/Atom'):
     xml.title('Example Feed')
     xml.link(None, href='http://example.org/')
@@ -75,6 +76,7 @@ if __name__ == "__main__":
   print xml
 
 '''
+<?xml version="1.0" encoding="utf-8"?>
 <feed xmlns="http://www.w3.org/2005/Atom">
   <title>Example Feed</title>
   <link href="http://example.org/" />
