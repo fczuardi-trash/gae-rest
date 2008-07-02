@@ -1,74 +1,50 @@
+from __future__ import with_statement
+
 __author__ = ('Jonas Galvez', 'jonas@codeazur.com.br', 'http://jonasgalvez.com.br')
 
-from __future__ import with_statement
 import sys
 
-class GeneratorContextManager(object):
-  def __init__(self, gen):
-    self.gen = gen
-  def __enter__(self):
-    try:
-      return self.gen.next()
-    except StopIteration:
-      raise RuntimeError("generator didn't yield")
-  def __exit__(self, type, value, traceback):
-    if type is None:
-      try:
-        self.gen.next()
-      except StopIteration:
-        return
-      else:
-        raise RuntimeError("generator didn't stop")
-    else:
-      try:
-        self.gen.throw(type, value, traceback)
-        raise RuntimeError("generator didn't stop after throw()")
-      except StopIteration:
-        return True
-      except:
-        if sys.exc_info()[1] is not value:
-          raise
-
-def contextmanager(ref, name, func):
-  def helper(*args, **kwds):
-    if len(args) > 0:
-      ref.write_element(name, args[0])
-    else:
-      return GeneratorContextManager(func(*args, **kwds))
-  return helper
-
-class XMLBuilder:
-  def __init__(self):
-    self.document = ""
+class builder:
   def __getattr__(self, name):
-    return contextmanager(self, name, self._element_writer(name))
-  def _element_writer(self, name):
-    ref = self
-    def _write_element_generator(value=None):
-      try:
-        ref.document += '<%s>' % name
-        if value != None:
-          ref.document += value
-        yield
-      finally:
-        ref.document += '</%s>' % name
-    return _write_element_generator
-  def write_element(self, name, value):
-    self.document += '<%s>%s</%s>' % (name, value, name)
+    return element(name)
 
-##### USAGE #####
+class element:
+  def __init__(self, name):
+    self.name = name
+  def __enter__(self):
+    if hasattr(self, 'attributes'):
+      print '<%s %s>' % (self.name, self.serialized_attrs)
+    else:
+      print '<%s>' % self.name
+  def __exit__(self, type, value, tb):
+    print '</%s>' % self.name
+  def __call__(self, value=None, **kargs):
+    if len(kargs.keys()) > 0:
+      self.attributes = kargs
+      self.serialized_attrs = self.serialize_attrs(kargs)
+    if value != None:
+      if hasattr(self, 'attributes'):
+        print '<%s %s>%s</%s>' % (self.name, self.serialized_attrs, value, self.name)
+      else:
+        print '<%s>%s</%s>' % (self.name, value, self.name)
+      return
+    return self
+  def serialize_attrs(self, attrs):
+    serialized = []
+    for attr, value in attrs.items():
+      serialized.append('%s="%s"' % (attr, value))
+    return ' '.join(serialized)
 
-xml = XMLBuilder()
-entries = [{'name': 'Entry #1'}, {'name': 'Entry #2'}]
+xml = builder()
 
-# pretty sweet, huh?
-with xml.entries():
-  for entry in entries:
-    xml.entry(entry['name'])
+with xml.entries:
+  with xml.entry(id=1):
+    xml.title("Woohoo!")
 
-print xml.document
 '''
-result:
-
-<entries><entry>Entry #1</entry><entry>Entry #2</entry></entries>
+<entries>
+<entry id="1">
+<title>Woohoo!</title>
+</entry>
+</entries>
 '''
