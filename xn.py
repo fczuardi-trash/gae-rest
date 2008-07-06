@@ -1,4 +1,5 @@
 from __future__ import with_statement
+from datetime import datetime
 import os, re, sys, types
 sys.path += [os.path.split(os.path.abspath(__file__))[0]]
 import glob, urllib2
@@ -60,10 +61,20 @@ class AtomBuilder:
                   xml.email(value.email())
                 else:
                   xml.name(value)
+            elif (kind in config.title) and property == config.title[kind]:
+              xml.title(value)
+            elif (kind in config.content) and property == config.content[kind]:
+              xml.content(value.replace('<','&lt;'))
+            elif (kind in config.summary) and property == config.summary[kind]:
+              xml.summary(value.replace('<','&lt;'))
+            elif (kind in config.published) and property == config.published[kind]:
+              xml.published('%sZ' % value.isoformat())
+            elif (kind in config.updated) and property == config.updated[kind]:
+              xml.updated('%sZ' % value.isoformat())
             elif type(value) == list:
-              xml["xn:%s" % property](' '.join(getattr(object, property)))
+              xml["xn:%s" % property](' '.join(value))
             else:
-              xml["xn:%s" % property](getattr(object, property))
+              xml["xn:%s" % property](str(value).replace('<','&lt;'))
     self.xml = xml
   def __str__(self):
     return str(self.xml)
