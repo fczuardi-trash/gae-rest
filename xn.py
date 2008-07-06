@@ -25,11 +25,7 @@ def expose(only=[]):
     sys.path.remove(pydir)
   return loadedfiles
 
-loadedfiles = expose()
-
-def retrieve_model_property_list(entity):
-  q = db.GqlQuery("SELECT * FROM XNExposedModel WHERE name = :1", entity)
-  return q[0].model_properties
+expose()
 
 class XNQueryHandler(webapp.RequestHandler):
   def get(self, format, version, query):
@@ -46,36 +42,47 @@ class AtomBuilder:
     'xmlns': 'http://www.w3.org/2005/Atom',
     'xmlns:xn': 'http://www.ning.com/atom/1.0'
   }
+  HANDLERS = {
+    'title': lambda value: value,
+    'content': lambda value: value.replace('<','&lt;'),
+    'summary': lambda value: value.replace('<','&lt;'),
+    'published': lambda value: '%sZ' % value.isoformat(),
+    'updated': lambda value: '%sZ' % value.isoformat(),
+    'author': 'process_author'
+  }
   def __init__(self, kind, objects):
     xml = builder(version='1.0', encoding='utf-8')
+    self.xml = xml
+    self.kind = kind
     with xml.feed(**self.FEED_NS):
       xml.title("GAE-REST Test Atom Feed")
       for object in objects:
         with xml.entry:
-          for property in object.properties().keys():
+          properties = object.properties()
+          self.process_known_elements(object, properties)
+          for property in properties:
             value = getattr(object, property)
-            if (kind in config.creator) and property == config.creator[kind]:
-              with xml.author:
-                if type(value) == User:
-                  xml.name(value.nickname())
-                  xml.email(value.email())
-                else:
-                  xml.name(value)
-            elif (kind in config.title) and property == config.title[kind]:
-              xml.title(value)
-            elif (kind in config.content) and property == config.content[kind]:
-              xml.content(value.replace('<','&lt;'))
-            elif (kind in config.summary) and property == config.summary[kind]:
-              xml.summary(value.replace('<','&lt;'))
-            elif (kind in config.published) and property == config.published[kind]:
-              xml.published('%sZ' % value.isoformat())
-            elif (kind in config.updated) and property == config.updated[kind]:
-              xml.updated('%sZ' % value.isoformat())
-            elif type(value) == list:
+            if type(value) == list:
               xml["xn:%s" % property](' '.join(value))
             else:
               xml["xn:%s" % property](str(value).replace('<','&lt;'))
     self.xml = xml
+  def process_author(self, value):
+    with self.xml.author:
+      if type(value) == User:
+        self.xml.name(value.nickname())
+        self.xml.email(value.email())
+      else:
+        self.xml.name(value)
+  def process_known_elements(self, object, properties):
+    for element in AtomBuilder.HANDLERS.keys():
+      m_element = getattr(config, element).get(self.kind, None)
+      if m_element != None:
+        if type(AtomBuilder.HANDLERS[element]) != str:
+          self.xml[element](AtomBuilder.HANDLERS[element](getattr(object, m_element)))
+        else:
+          getattr(self, AtomBuilder.HANDLERS[element])(getattr(object, m_element))
+        del properties[m_element]
   def __str__(self):
     return str(self.xml)
 

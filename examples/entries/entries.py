@@ -1,10 +1,12 @@
 from google.appengine.ext import db
 from google.appengine.ext import webapp
 from google.appengine.api.users import User
+from datetime import datetime
 import wsgiref.handlers
 
 class Entry(db.Model):
   user = db.UserProperty()
+  published = db.DateTimeProperty()
 
 entries = ['jonasgalvez@gmail.com', 'fabricio@gmail.com']
 
@@ -12,7 +14,7 @@ for entry in Entry.all():
   entry.delete()
 
 for entry in entries:
-  e = Entry(user=User(email=entry))
+  e = Entry(user=User(email=entry), published=datetime.now())
   e.put()
 
 class EntriesHandler(webapp.RequestHandler):
