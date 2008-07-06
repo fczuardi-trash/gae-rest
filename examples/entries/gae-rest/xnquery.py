@@ -110,10 +110,15 @@ class GQLQueryBuilder:
           if name == 'type': continue # TO-DO: make it so that you don't have to do this
           self.gql_query += [selector.leftside, selector.operator, selector.rightside_raw]
   def process_ordering_conditions(self):
-    if self.content != None: # TO-DO: from, to
-      order = self.ordering.get('order', None)
-      if order != None:
-        self.gql_query += ['ORDER BY', order.field, order.order]
+    order = self.ordering.get('order', None)
+    if order != None:
+      self.gql_query += ['ORDER BY', order.field, order.order]
+    _from = self.ordering.get('from', None)
+    _to = self.ordering.get('to', None)
+    if _from != None and _to != None:
+      _from, _to = int(_from.rightside), int(_to.rightside)
+      self.gql_query += ['LIMIT', '%s, %s' % (int(_from), (_to-_from))]
+
   def __str__(self):
     return ' '.join(self.gql_query)
 
@@ -122,7 +127,7 @@ class XNQueryTester(unittest.TestCase):
     ("profile(id='david')", None),
     ("content(type='User'&author='david')", None),
     ("content", "order=published@D"),
-    ("content(type='Photo')", "order=my.viewCount@D&from=0&to=10"),
+    ("content(type='Photo')", "order=my.viewCount@D&from=20&to=30"),
     ("content(type='Topic'&my.xg_forum_commentCount>1)", "order=my.xg_forum_commentCount@D&from=0&to=5")
   )
   def test_author_is_david(self):
@@ -144,12 +149,12 @@ class XNQueryTester(unittest.TestCase):
     sample_query = self.queries[3]
     xnquery = XNQueryParser(sample_query[0], sample_query[1])
     gqlquery = GQLQueryBuilder(xnquery)
-    assert str(gqlquery) == """SELECT * FROM Photo ORDER BY viewCount DESC"""
+    assert str(gqlquery) == """SELECT * FROM Photo ORDER BY viewCount DESC LIMIT 20, 10"""
 
 if __name__ == '__main__':
   unittest.main()
   # helpful for debugging
-  # sample_query = ("content(type='Photo')", "order=my.viewCount@D&from=0&to=10")
+  # sample_query = ("content(type='Photo')", "order=my.viewCount@D&from=20&to=30")
   # xnquery = XNQueryParser(sample_query[0], sample_query[1])
   # gqlquery = GQLQueryBuilder(xnquery)
   # print str(gqlquery)
