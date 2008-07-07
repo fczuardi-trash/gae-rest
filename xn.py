@@ -75,6 +75,7 @@ class AtomBuilder:
       else:
         self.xml.name(value)
   def process_known_elements(self, object, properties):
+    used_properties = {}
     for element in AtomBuilder.HANDLERS.keys():
       m_element = getattr(config, element).get(self.kind, None)
       if m_element != None:
@@ -82,7 +83,9 @@ class AtomBuilder:
           self.xml[element](AtomBuilder.HANDLERS[element](getattr(object, m_element)))
         else:
           getattr(self, AtomBuilder.HANDLERS[element])(getattr(object, m_element))
-        del properties[m_element]
+        used_properties[m_element] = True
+    for property_name in used_properties.keys():
+      del properties[property_name]
   def __str__(self):
     return str(self.xml)
 
