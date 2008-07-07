@@ -15,7 +15,7 @@ class builder:
     return element(name, self)
   def __getitem__(self, name):
     return element(name, self)
-  def __str__(self):
+  def __unicode__(self):
     return self.document.getvalue()
   def write(self, line):
     self.document.write('%s%s' % ((self.indentation * ' '), line))

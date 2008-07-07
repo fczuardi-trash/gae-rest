@@ -41,7 +41,7 @@ class XNQueryHandler(webapp.RequestHandler):
       kind = xnquery.resources.content.selectors.type.rightside
     self.response.headers['Content-Type'] = 'application/atom+xml'
     atom = AtomBuilder(kind, objects)
-    self.response.out.write(str(atom))
+    self.response.out.write(unicode(atom))
 
 class AtomBuilder:
   FEED_NS = {
@@ -72,7 +72,7 @@ class AtomBuilder:
             if type(value) == list:
               xml["xn:%s" % property](' '.join(value))
             else:
-              xml["xn:%s" % property](str(value).replace('<','&lt;'))
+              xml["xn:%s" % property](unicode(value).replace('<','&lt;'))
     self.xml = xml
   def process_author(self, value):
     with self.xml.author:
@@ -94,7 +94,7 @@ class AtomBuilder:
     for property_name in used_properties.keys():
       del properties[property_name]
   def __str__(self):
-    return str(self.xml)
+    return unicode(self.xml)
 
 def main():
   application = webapp.WSGIApplication([('/xn/(.*)/(.*)/(.*)', XNQueryHandler)], debug=True)
