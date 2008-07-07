@@ -30,10 +30,16 @@ expose()
 class XNQueryHandler(webapp.RequestHandler):
   def get(self, format, version, query):
     xnquery = XNQueryParser(query, os.environ['QUERY_STRING'])
-    gqlquery = GQLQueryBuilder(xnquery)
-    objects = db.GqlQuery(str(gqlquery))
+    # if the query is content(id='...'), do not use GQLQueryBuilder
+    if 'id' in xnquery.resources.content.selectors:
+      entity_ref = db.Key(xnquery.resources.content.selectors.id.rightside)
+      objects = [db.get(entity_ref)]
+      if len(objects) > 0: kind = entity_ref.kind()
+    else:
+      gqlquery = GQLQueryBuilder(xnquery)
+      objects = db.GqlQuery(str(gqlquery))
+      kind = xnquery.resources.content.selectors.type.rightside
     self.response.headers['Content-Type'] = 'application/atom+xml'
-    kind = xnquery.resources.content.selectors.type.rightside
     atom = AtomBuilder(kind, objects)
     self.response.out.write(str(atom))
 
@@ -58,6 +64,7 @@ class AtomBuilder:
       xml.title("GAE-REST Test Atom Feed")
       for object in objects:
         with xml.entry:
+          xml.id(object.key())
           properties = object.properties()
           self.process_known_elements(object, properties)
           for property in properties:
