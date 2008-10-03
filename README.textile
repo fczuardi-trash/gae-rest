@@ -1,5 +1,5 @@
 h1. Project Description - Atom REST API for Google App Engine
- 
+
 h2. Summary
 
 The goal of this project is to develop an Open Source set of scripts that implements the Ning Atom API entry-points on any application hosted on Google Application Engine.
