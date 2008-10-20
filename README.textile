@@ -27,7 +27,7 @@ h2. Benefits
 
 h2. Specs
 
-"Here are the full documentation from the Ning website":http://developer.ning.com/notes/Ning_REST_API
+"Here are the full documentation from the Ning website":http://developer.ning.com/notes/Ning_REST_API ("Cahed version here":https://memory.s3.amazonaws.com/ning/Ning_REST_API.html)
 
 
 h2. Examples
@@ -63,7 +63,7 @@ The first part of the project involves the implementation of a set of python scr
    # Create Binary Content using POST
 
 
-The details of the syntax of the feeds, the calls and the expected results are in "http://developer.ning.com/notes/XML_Operations":http://developer.ning.com/notes/XML_Operations
+The details of the syntax of the feeds, the calls and the expected results are in "http://developer.ning.com/notes/XML_Operations":http://developer.ning.com/notes/XML_Operations ("Cahed version here":https://memory.s3.amazonaws.com/ning/XML_Operations.html)
 
 h3. Phase 2: Profiles
 
@@ -81,7 +81,7 @@ h2. Other References
 
 * "http://developer.ning.com":http://developer.ning.com
 * "http://blog.ning.com/2006/04/the_hottest_api_on_the_interne.html":http://blog.ning.com/2006/04/the_hottest_api_on_the_interne.html
-* "http://restdemos.ning.com":http://restdemos.ning.com
+* "http://restdemos.ning.com":http://restdemos.ning.com ("Cahed version here":http://fczrestdemos.ning.com)
 
 h2. Open Questions
 
